@@ -1,7 +1,18 @@
 package vttp2022.assessment.csf.orderbackend.models;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.springframework.http.converter.feed.RssChannelHttpMessageConverter;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonValue;
 
 // IMPORTANT: You can add to this class, but you cannot delete its original content
 
@@ -40,4 +51,53 @@ public class Order {
 
 	public void setComments(String comments) { this.comments = comments; }
 	public String getComments() { return this.comments; }
+
+	public static Order createFromJson(String json){
+        InputStream is = new ByteArrayInputStream (json.getBytes ());	// Create inputstream
+        JsonReader reader = Json.createReader(is);				     // Create reader for inputstream
+        JsonObject data = reader.readObject();					     // Convert string to JSON object
+
+        Order order = new Order();
+		order.setName(data.getString("name"));
+		order.setEmail(data.getString("email"));
+		order.setSize(data.getInt("size"));
+		order.setSauce(data.getString("sauce"));
+		if(data.getString("base").equals("thick")){
+			order.setThickCrust(true);
+		}else if(data.getString("base").equals("thin")){
+			order.setThickCrust(false);
+		}
+		List<String> toppings = new LinkedList<>();
+		for(JsonValue i : data.getJsonArray("toppings")){
+			toppings.add(i.toString().replace("\"", ""));
+		}
+		order.setToppings(toppings);
+		order.setComments(data.getString("comments"));
+ 
+        return order;
+    }
+
+	public static Order createFromResultSet(SqlRowSet rs){
+		Order order = new Order();
+		order.setOrderId(rs.getInt("order_id"));
+		order.setName(rs.getString("name"));
+		order.setEmail(rs.getString("email"));
+		order.setSize(rs.getInt("pizza_size"));
+		order.setThickCrust(rs.getBoolean("thick_crust"));
+		order.setSauce(rs.getString("sauce"));
+		List<String> toppings = Arrays.asList(rs.getString("toppings").split(","));
+		order.setToppings(toppings);
+		order.setComments(rs.getString("comments"));
+ 
+        return order;
+		
+	}
+
+	// public JsonObject toJson(){
+    //     return Json.createObjectBuilder()
+    //     .add("name",name)
+    //     .add("email",email)
+    //     .add("mobile",mobile)
+    //     .build();
+    // }
 }

@@ -1,5 +1,7 @@
 package vttp2022.assessment.csf.orderbackend.models;
 
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+
 // IMPORTANT: You can add to this class, but you cannot delete its original content
 
 public class OrderSummary {

@@ -1,0 +1,18 @@
+
+<div class="container">
+  <div *ngIf="respOrder.length < 1">
+    <h3>Unable to find any orders for {{email}}</h3>
+  </div>
+
+  <div *ngIf="respOrder.length > 0">
+    <h3>Orders for {{email}}</h3>
+    <div class="box-it" *ngFor="let o of respOrder">
+      <h5>Order Id: {{o.id}}</h5>
+      <h5>Total Cost: ${{ o.totalcost | number:'1.2-2' }}</h5>
+    </div>
+  </div>
+
+  <div class="float-right">
+    <button type="button" (click)="homepage()">Back to Ordering</button>
+  </div>
+</div>
