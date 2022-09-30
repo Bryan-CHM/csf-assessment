@@ -25,7 +25,7 @@ const appPath: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule.forRoot(appPath)
+    RouterModule.forRoot(appPath,{useHash: true})
   ],
 
   providers: [PizzaService],
